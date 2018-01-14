@@ -3,7 +3,10 @@ from bson.objectid import ObjectId
 
 class DB():
     def __init__(self):
-        self.client = MongoClient('mongodb://localhost:27017/')
+        mongoConnectionStr = 'mongodb://localhost:27017/'
+        if os.environ.get('APP_LOCATION') == 'heroku':
+            mongoConnectionStr = 'mongodb://mirandaLi:lisirui1020@cluster0-shard-00-00-eluxi.mongodb.net:27017,cluster0-shard-00-01-eluxi.mongodb.net:27017,cluster0-shard-00-02-eluxi.mongodb.net:27017/admin?readPreference=primary&ssl=true'
+        self.client = MongoClient(self.mongoConnectionStr)
         self.db = self.client['wacp-dev']
         self.LoginInfo = self.db.loginInfo
         self.Messages = self.db.Messages
