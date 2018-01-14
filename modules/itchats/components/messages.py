@@ -273,8 +273,8 @@ def send_raw_msg(self, loginInfo, userName, msgType, content, toUserName):
     cookies = loginInfo['cookieJar']
     r = self.s.post(url, headers=headers, cookies=cookies,
         data=json.dumps(data, ensure_ascii=False).encode('utf8'))
-    print('header1111',r.content)
-    return (self.loginInfo, self.storageClass.userName)
+    print r
+    return r.content
 
 def send_msg(self, msg='Test Message', toUserName=None):
     logger.debug('Request to send a text message to %s: %s' % (toUserName, msg))
