@@ -1,1 +1,1 @@
-worker: python start.py
+worker: python massge_consumer.py
