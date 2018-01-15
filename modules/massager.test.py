@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import unittest
 import massager
 import responses
@@ -41,7 +43,7 @@ class TestStringMethods(unittest.TestCase):
         itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1, content='123555', toUserName='filehelper')
         print '------!!!!!'
         massagers.auto_reply_txt_msg(loginInfo=loginInfo, userName=userName, msgType=1, content='123556', toUserName='filehelper')
-    # @unittest.skip("skipping")
+    @unittest.skip("skipping")
     def test_keep_receive_msg(self):
         print 'hi'
         massagers = massager.Massager(requests,self.db)
@@ -75,5 +77,21 @@ class TestStringMethods(unittest.TestCase):
             print sent
             delRes = self.db.delete_one_msg(oneMsg['_id'])
             print delRes
+    def test_get_reply_msg(self):
+        predefinedMsgArray = {
+            'key': 'testPredefinedMsgArray',
+            'customReply': [
+            {'key': 'default','value': '你好啊'},
+            {'key': 'new_friend','value': '是的，很开心遇到你！'},
+            {'key': '新款上市','value': '2018💦如下：A。玫瑰花'}
+        ]}
+        # saved = self.db.test_save_chinese(predefinedMsgArray)
+        # gotMsg = self.db.test_get_chinese({'key': 'testPredefinedMsgArray'})
+        # should get default msg
+        massagers = massager.Massager(requests,self.db)
+        replyMsg = massagers.get_reply_msg(predefinedMsgArray['customReply'], '你好', True)
+        self.assertEqual(replyMsg, '你好啊')
+        newFriendMsg = massagers.get_reply_msg(predefinedMsgArray['customReply'], 'new_friend', True)
+        self.assertEqual(newFriendMsg, '是的，很开心遇到你！')
 if __name__ == '__main__':
     unittest.main()

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import json
 import time
 import config
@@ -49,11 +51,10 @@ class Massager():
             return None
         else:
             print predefined_msg_array
-            default_reply = pydash.find(predefined_msg_array, {'key': 'default'})
+            default_reply = pydash.find(predefined_msg_array, {'key': unicode('default')})
             reply_msg = default_reply['value']
             if msg_content=='new_friend':
-                default_reply = pydash.find(predefined_msg_array, {'key': 'new_friend'})
-                print default_reply['key'], default_reply['value']
+                default_reply = pydash.find(predefined_msg_array, {'key': unicode('new_friend')})
                 reply_msg = default_reply['value']
             if not isKeyWordReplyActive:
                 return reply_msg

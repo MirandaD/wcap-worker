@@ -37,3 +37,9 @@ class DB():
     def delete_one_msg(self, id):
         delRes = self.Messages.find_one_and_delete({'_id': ObjectId(id)})
         return delRes
+    def test_save_chinese(self, toSave):
+        saveRes = self.Messages.insert_one(toSave)
+        return saveRes
+    def test_get_chinese(self, toget):
+        getRes = self.Messages.find_one(toget)
+        return getRes
