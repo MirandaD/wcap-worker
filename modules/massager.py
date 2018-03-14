@@ -102,7 +102,7 @@ class Massager():
                     autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
                     print 'Successfully replied to new friend %s' % newFriendUserName
                     return autoReply
-            except ConnectionError as connectionError:
+            except self.s.ConnectionError as connectionError:
                 print 'connection error when replying', connectionError
                 time.sleep(3)
             except Exception as e:
