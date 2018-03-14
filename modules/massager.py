@@ -42,9 +42,13 @@ class Massager():
             updateLoginInfo = self.db.update_login_info(loginInfo)
             saveMsg = self.db.save_list_of_msg(dic['AddMsgList'], loginInfo)
             return dic['AddMsgList'], dic['ModContactList']
-        except:
-            print 'too many requests, slowing down'
+        except ConnectionError as connectionError:
+            print 'connection error when replying', connectionError
+            print 'trying to slow down'
             time.sleep(3)
+            return None, None
+        except Exception as e:
+            print 'unexpected error happened', e.message, e.__doc__
             return None, None
 
     def get_reply_msg(self, predefined_msg_array, msg_content, isKeyWordReplyActive=True):
@@ -75,9 +79,9 @@ class Massager():
         userName = loginInfo['User']['UserName']
         # decide the receiver of this msg:
         receiver = msg['FromUserName']
-        # if msg['FromUserName'] == userName:
-        #     # I am the sender
-        #     return 'OK'
+        if msg['FromUserName'] == userName:
+            # I am the sender
+            return 'OK'
         if '@@' in msg['FromUserName']:
             # from group
             return 'OK'
@@ -103,5 +107,4 @@ class Massager():
                 time.sleep(3)
             except Exception as e:
                 print 'unexpected error happened', e.message, e.__doc__
-            
         return 'No compatible msg type, continue'
