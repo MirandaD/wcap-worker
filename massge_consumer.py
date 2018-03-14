@@ -45,7 +45,7 @@ class MassageConsumer():
                                 if(wechatCommunicateRet != 0):
                                     print 'Disconnected with wechat account'
                                     self.db.delete_login_info(loginInfo)
-                time.sleep(10)
+                time.sleep(3)
                 
 
 if __name__ == '__main__':
