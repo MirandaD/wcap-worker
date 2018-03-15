@@ -36,6 +36,7 @@ class Massager():
             headers=headers,
             timeout=config.TIMEOUT)
             dic = json.loads(r.content.decode('utf-8', 'replace'))
+            print dic
             if dic['BaseResponse']['Ret'] != 0: return None, None
             loginInfo['SyncKey'] = dic['SyncCheckKey']
             loginInfo['synckey'] = '|'.join([
