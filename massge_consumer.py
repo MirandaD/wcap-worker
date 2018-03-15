@@ -42,7 +42,7 @@ class MassageConsumer():
                             processRes = self.massagers.process_msg_slowly(singleMsg, loginInfo, responseMsg='Hi, thanks talking to Miranda\'s chatbot. Will get back to you ASAP.')
                             # all the steps should return the response from http request, I shall decide how to handle failure.
                             wechatCommunicateRet = pydash.get(processRes, 'BaseResponse.Ret', default=-1)
-                            print processRes
+                            print pydash.get(processRes, 'BaseResponse')
                             if(wechatCommunicateRet != 0):
                                 print 'Disconnected with wechat account', wechatCommunicateRet
                 time.sleep(3)
