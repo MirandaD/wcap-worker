@@ -12,7 +12,7 @@ class DB():
         self.LoginInfo = self.db.loginInfo
         self.Messages = self.db.Messages
     def get_login_info_by_uuid(self, id):
-        loginInfo = self.LoginInfo.find_one()
+        loginInfo = self.LoginInfo.find_one({'_id': ObjectId(id)})
         return loginInfo
     def get_login_info_cursor(self):
         loginInfoCursor = self.LoginInfo.find()
