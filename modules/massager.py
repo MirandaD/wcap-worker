@@ -14,6 +14,7 @@ class Massager():
 
     def get_msg(self, loginId):
         loginInfo = self.db.get_login_info_by_uuid(loginId)
+        print loginId + loginInfo['_id']
         url = '%s/webwxsync?sid=%s&skey=%s&pass_ticket=%s' % (
             loginInfo['url'], loginInfo['wxsid'], loginInfo['skey'],
             loginInfo['pass_ticket'])
