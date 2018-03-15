@@ -41,6 +41,7 @@ class Massager():
             ])
             updateLoginInfo = self.db.update_login_info(loginInfo)
             saveMsg = self.db.save_list_of_msg(dic['AddMsgList'], loginInfo)
+            print 'pulling msg' + dic['AddMsgList']
             return dic['AddMsgList'], dic['ModContactList']
         except:
             print 'too many requests, slowing down'
@@ -71,12 +72,14 @@ class Massager():
     def process_msg_slowly(self, msg, loginInfo, isActivateAutoReply=True, isAutoAddFriend=True, responseMsg='test'):
         # TODO: handle group msg
         # handle text and friend request
+        print 'got msg' + msg['MsgType']
         msgType = msg['MsgType']
         userName = loginInfo['User']['UserName']
         # decide the receiver of this msg:
         receiver = msg['FromUserName']
         if msg['FromUserName'] == userName:
             # I am the sender
+            print 'sender myself'
             return 'OK'
         if '@@' in msg['FromUserName']:
             # from group
