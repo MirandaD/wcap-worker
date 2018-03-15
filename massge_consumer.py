@@ -35,8 +35,8 @@ class MassageConsumer():
                         loginInfoId = loggedinUser['_id']
                         loginInfo = loggedinUser
                         userName = pydash.get(loginInfo, 'User.UserName')
-                        print('excuting', counter)
                         msg1,msg2 = self.massagers.get_msg(loginInfoId)
+                        print 'msg got'+msg1
                         if msg1 and len(msg1)>0:
                             for singleMsg in msg1:
                                 processRes = self.massagers.process_msg_slowly(singleMsg, loginInfo, responseMsg='Hi, thanks talking to Miranda\'s chatbot. Will get back to you ASAP.')
@@ -44,7 +44,7 @@ class MassageConsumer():
                                 wechatCommunicateRet = pydash.get(processRes, 'BaseResponse.Ret', default=-1)
                                 if(wechatCommunicateRet != 0):
                                     print 'Disconnected with wechat account', wechatCommunicateRet
-                    time.sleep(3)
+                time.sleep(3)
                 
 
 if __name__ == '__main__':
