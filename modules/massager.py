@@ -27,6 +27,9 @@ class Massager():
             'User-Agent': config.USER_AGENT
         }
         try:
+            print url
+            print data
+            print headers
             r = self.s.post(
             url,
             data=json.dumps(data),
@@ -40,7 +43,7 @@ class Massager():
                 for item in dic['SyncCheckKey']['List']
             ])
             updateLoginInfo = self.db.update_login_info(loginInfo)
-            saveMsg = self.db.save_list_of_msg(dic['AddMsgList'], loginInfo)
+            # saveMsg = self.db.save_list_of_msg(dic['AddMsgList'], loginInfo)
             print 'pulling msg' + dic['AddMsgList']
             return dic['AddMsgList'], dic['ModContactList']
         except:
