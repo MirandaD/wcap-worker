@@ -73,7 +73,6 @@ class Massager():
     def process_msg_slowly(self, msg, loginInfo, isActivateAutoReply=True, isAutoAddFriend=True, responseMsg='test'):
         # TODO: handle group msg
         # handle text and friend request
-        print 'got msg' + msg['MsgType']
         msgType = msg['MsgType']
         userName = loginInfo['User']['UserName']
         # decide the receiver of this msg:
