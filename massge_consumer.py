@@ -21,6 +21,7 @@ class MassageConsumer():
                 time.sleep(20)
             counter = counter.__add__(1)
             for loggedinUser in loggedinUsers:
+                print 'hi2' + pydash.get(loginInfo, 'User.UserName')
                 if not self.login_info_handler.loginInfoValidation(loggedinUser):
                     print 'Insufficient login details'
                     self.db.delete_login_info(loggedinUser)
@@ -43,7 +44,7 @@ class MassageConsumer():
                                 wechatCommunicateRet = pydash.get(processRes, 'BaseResponse.Ret', default=-1)
                                 if(wechatCommunicateRet != 0):
                                     print 'Disconnected with wechat account', wechatCommunicateRet
-                time.sleep(3)
+                    time.sleep(3)
                 
 
 if __name__ == '__main__':
