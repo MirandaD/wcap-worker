@@ -75,12 +75,12 @@ class Massager():
         # handle text and friend request
         msgType = msg['MsgType']
         userName = loginInfo['User']['UserName']
+        nickName = loginInfo['User']['NickName']
         # decide the receiver of this msg:
         receiver = msg['FromUserName']
-        if msg['FromUserName'] == userName:
+        if msg['FromUserName'] == userName and nickName != 'Miranda':
             # I am the sender
             print 'sender ismyself'
-            print userName
             return 'OK'
         if '@@' in msg['FromUserName']:
             # from group
@@ -89,7 +89,6 @@ class Massager():
             try:
                 if msgType==1 and isActivateAutoReply: # plain text
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], msg['Content'], True)
-                    print reply_msg
                     sent = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
                     print 'Successfully reply to %s' % receiver
                     return sent
