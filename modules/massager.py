@@ -79,7 +79,8 @@ class Massager():
         receiver = msg['FromUserName']
         if msg['FromUserName'] == userName:
             # I am the sender
-            print 'sender myself'
+            print 'sender ismyself'
+            print userName
             return 'OK'
         if '@@' in msg['FromUserName']:
             # from group
