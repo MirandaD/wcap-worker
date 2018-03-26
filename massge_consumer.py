@@ -21,7 +21,6 @@ class MassageConsumer():
                 time.sleep(20)
             counter = counter.__add__(1)
             for loggedinUser in loggedinUsers:
-                print 'hi2' + pydash.get(loggedinUser, 'User.UserName')
                 if not self.login_info_handler.loginInfoValidation(loggedinUser):
                     print 'Insufficient login details'
                     self.db.delete_login_info(loggedinUser)
