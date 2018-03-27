@@ -86,7 +86,7 @@ class Massager():
             return 'OK'
         if msgType:
             try:
-              print msgType
+                print msgType
                 if msgType==1 and isActivateAutoReply: # plain text
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], msg['Content'], True)
                     sent = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
