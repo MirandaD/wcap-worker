@@ -4,7 +4,7 @@ import os
 
 class DB():
     def __init__(self):
-        self.mongoConnectionStr = 'mongodb://localhost:27017/'
+        self.mongoConnectionStr = 'mongodb://mirandaLi:lisirui1020@cluster0-shard-00-00-eluxi.mongodb.net:27017,cluster0-shard-00-01-eluxi.mongodb.net:27017,cluster0-shard-00-02-eluxi.mongodb.net:27017/admin?readPreference=primary&ssl=true'
         if os.environ.get('APP_LOCATION') == 'heroku':
             self.mongoConnectionStr = 'mongodb://mirandaLi:lisirui1020@cluster0-shard-00-00-eluxi.mongodb.net:27017,cluster0-shard-00-01-eluxi.mongodb.net:27017,cluster0-shard-00-02-eluxi.mongodb.net:27017/admin?readPreference=primary&ssl=true'
         self.client = MongoClient(self.mongoConnectionStr)

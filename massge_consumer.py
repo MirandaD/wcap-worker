@@ -1,5 +1,5 @@
 from modules import db
-import time
+import time, re
 from modules import itchats
 from modules import massager
 from modules import login_info_handler
@@ -33,12 +33,10 @@ class MassageConsumer():
                     # else:
                     print 'process each'
                     loginInfoId = loggedinUser['_id']
-                    loginInfo = loggedinUser
-                    userName = pydash.get(loginInfo, 'User.UserName')
                     msg1,msg2 = self.massagers.get_msg(loginInfoId)
                     if msg1 and len(msg1)>0:
                         for singleMsg in msg1:
-                            processRes = self.massagers.process_msg_slowly(singleMsg, loginInfo, responseMsg='Hi, thanks talking to Miranda\'s chatbot. Will get back to you ASAP.')
+                            processRes = self.massagers.process_msg_slowly(singleMsg, loginInfoId, responseMsg='Hi, thanks talking to Miranda\'s chatbot. Will get back to you ASAP.')
                             # all the steps should return the response from http request, I shall decide how to handle failure.
                             wechatCommunicateRet = pydash.get(processRes, 'BaseResponse.Ret', default=-1)
                             print pydash.get(processRes, 'BaseResponse')

@@ -6,6 +6,8 @@ import config
 import itchats
 import pydash
 import pprint
+import requests
+import re
 
 class Massager():
     def __init__(self, requests, db):
@@ -19,7 +21,6 @@ class Massager():
             'skey'     : loginInfo['skey'],
             'sid'      : loginInfo['wxsid'],
             'uin'      : loginInfo['wxuin'],
-            'deviceid' : loginInfo['deviceid'],
             'synckey'  : loginInfo['synckey'],
             '_'        : int(time.time() * 1000),}
         headers = { 'User-Agent' : config.USER_AGENT }
@@ -40,7 +41,7 @@ class Massager():
         regx = r'window.synccheck={retcode:"(\d+)",selector:"(\d+)"}'
         pm = re.search(regx, r.text)
         if pm is None or pm.group(1) != '0':
-            logger.debug('Unexpected sync check result: %s' % r.text)
+            print('Unexpected sync check result: %s' % r.text)
             return None
         return pm.group(2)
 
@@ -83,6 +84,7 @@ class Massager():
     def get_reply_msg(self, predefined_msg_array, msg_content, isKeyWordReplyActive=True):
         # TODO: unit test this
         # reserved keywords: default for default, new_friend for add friend
+        print msg_content
         if len(predefined_msg_array) == 0:
             return None
         elif not msg_content:
@@ -92,7 +94,7 @@ class Massager():
             default_reply = pydash.find(predefined_msg_array, {'key': unicode('default')})
             reply_msg = default_reply['value']
             if msg_content=='newfriend':
-                default_reply = pydash.find(predefined_msg_array, {'key': unicode('newfriend')})
+                default_reply = pydash.find(predefined_msg_array, {'key': 'newfriend'})
                 reply_msg = default_reply['value']
             if not isKeyWordReplyActive:
                 return reply_msg
@@ -101,15 +103,36 @@ class Massager():
             else:
                 return None
 
-    def process_msg_slowly(self, msg, loginInfo, isActivateAutoReply=True, isAutoAddFriend=True, responseMsg='test'):
+    def send_raw_msg(self, loginInfo, userName, msgType, content, toUserName):
+        url = '%s/webwxsendmsg' % loginInfo['url']
+        data = {
+            'BaseRequest': loginInfo['BaseRequest'],
+            'Msg': {
+                'Type': msgType,
+                'Content': content,
+                'FromUserName': userName,
+                'ToUserName': toUserName ,
+                'LocalID': int(time.time() * 1e4),
+                'ClientMsgId': int(time.time() * 1e4),
+                }, 
+            'Scene': 0, }
+        headers = { 'ContentType': 'application/json; charset=UTF-8', 'User-Agent' : config.USER_AGENT }
+        cookies = loginInfo['cookieJar']
+        r = self.s.post(url, headers=headers, cookies=cookies,
+            data=json.dumps(data, ensure_ascii=False).encode('utf8'))
+        print r
+        return r.content
+
+    def process_msg_slowly(self, msg, loginId, isActivateAutoReply=True, isAutoAddFriend=True, responseMsg='test'):
         # TODO: handle group msg
         # handle text and friend request
+        loginInfo = self.db.get_login_info_by_uuid(loginId)
         msgType = msg['MsgType']
         userName = loginInfo['User']['UserName']
         nickName = loginInfo['User']['NickName']
         # decide the receiver of this msg:
         receiver = msg['FromUserName']
-        if msg['FromUserName'] == userName and nickName != 'Miranda':
+        if msg['FromUserName'] == userName:
             # I am the sender
             print 'sender ismyself'
             return 'OK'
@@ -118,11 +141,11 @@ class Massager():
             return 'OK'
         if msgType:
             try:
-                print 'msgType'
+                # syncCheckRes = self.sync_check(loginInfo)
                 print msgType
                 if msgType==1 and isActivateAutoReply: # plain text
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], msg['Content'], True)
-                    sent = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1, content=reply_msg, toUserName=receiver)
+                    sent = self.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1, content=reply_msg, toUserName=receiver)
                     pprint.pprint(sent)
                     print 'Successfully reply to %s' % receiver
                     return sent
@@ -133,20 +156,19 @@ class Massager():
                     print 'Successfully added a new friend'
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
                     print reply_msg
-                    autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
+                    autoReply = self.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
                     print 'Successfully replied to new friend %s' % newFriendUserName
                     return autoReply
-                if msgType == 10000:
-                    pprint.pprint(msg)
-                    sent = itchats.add_friend(receiver, status=2, verifyContent='', loginInfo=loginInfo)
-                    # reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
-                    reply_msg = '\u4f60\u597d'
-                    print reply_msg
-                    autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1, content=reply_msg, toUserName=receiver)
+                if msgType == 10000 or msgType == 51:
+                    print 10000
+                    sent = itchats.add_friend(receiver, status=3, verifyContent=msg['Ticket'], loginInfo=loginInfo)
+                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
+                    pprint.pprint(sent)
+                    autoReply = self.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1, content=reply_msg, toUserName=receiver)
                     pprint.pprint(autoReply)
                     print 'Successfully replied to new friend %s' % receiver
             except Exception as e:
                 print'unexpected error happened', e.message, e.__doc__
                 time.sleep(3)
-
+        loginInfo = None
         return 'No compatible msg type, continue'
