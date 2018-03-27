@@ -60,8 +60,8 @@ class Massager():
             print predefined_msg_array
             default_reply = pydash.find(predefined_msg_array, {'key': unicode('default')})
             reply_msg = default_reply['value']
-            if msg_content=='newfriend':
-                default_reply = pydash.find(predefined_msg_array, {'key': unicode('newfriend')})
+            if msg_content=='new_friend':
+                default_reply = pydash.find(predefined_msg_array, {'key': unicode('new_friend')})
                 reply_msg = default_reply['value']
             if not isKeyWordReplyActive:
                 return reply_msg
@@ -105,11 +105,9 @@ class Massager():
                     return autoReply
                 if msgType == 10000:
                     pprint.pprint(msg)
-                    pprint.pprint(receiver)
                     sent = itchats.add_friend(receiver, status=2, verifyContent=msg['Ticket'], loginInfo=loginInfo)
-                    print 'sent add friend request, res:'
                     pprint.pprint(sent)
-                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
+                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'new_friend', isKeyWordReplyActive=True)
                     print reply_msg
                     autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
                     print 'Successfully replied to new friend %s' % receiver
