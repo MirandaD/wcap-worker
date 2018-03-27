@@ -109,7 +109,7 @@ class Massager():
                     pprint.pprint(sent)
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], 'new_friend', isKeyWordReplyActive=True)
                     print reply_msg
-                    autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
+                    autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
                     print 'Successfully replied to new friend %s' % newFriendUserName
             except Exception as e:
                 print'unexpected error happened', e.message, e.__doc__
