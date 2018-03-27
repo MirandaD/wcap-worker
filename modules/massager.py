@@ -90,7 +90,8 @@ class Massager():
                 print msgType
                 if msgType==1 and isActivateAutoReply: # plain text
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], msg['Content'], True)
-                    sent = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
+                    sent = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1, content=reply_msg, toUserName=receiver)
+                    pprint.pprint(sent)
                     print 'Successfully reply to %s' % receiver
                     return sent
                 if msgType == 37 and isAutoAddFriend: # friend request
