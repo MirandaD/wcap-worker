@@ -86,12 +86,14 @@ class Massager():
             return 'OK'
         if msgType:
             try:
+              print msgType
                 if msgType==1 and isActivateAutoReply: # plain text
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], msg['Content'], True)
                     sent = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
                     print 'Successfully reply to %s' % receiver
                     return sent
-                if msgType==37 and isAutoAddFriend: # friend request
+                if msgType == 37 and isAutoAddFriend: # friend request
+                    print 'new friend'
                     newFriendUserName = msg['RecommendInfo']['UserName']
                     sent = itchats.add_friend(newFriendUserName, status=3, verifyContent=msg['Ticket'], loginInfo=loginInfo)
                     print 'Successfully added a new friend'
