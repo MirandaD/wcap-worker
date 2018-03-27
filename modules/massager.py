@@ -11,6 +11,37 @@ class Massager():
         # requires requests and costomized db
         self.db = db
         self.s = requests
+    def sync_check(self, loginInfo):
+        url = '%s/synccheck' % loginInfo['syncUrl']
+        params = {
+            'r'        : int(time.time() * 1000),
+            'skey'     : loginInfo['skey'],
+            'sid'      : loginInfo['wxsid'],
+            'uin'      : loginInfo['wxuin'],
+            'deviceid' : loginInfo['deviceid'],
+            'synckey'  : loginInfo['synckey'],
+            '_'        : int(time.time() * 1000),}
+        headers = { 'User-Agent' : config.USER_AGENT }
+        try:
+            r = self.s.get(url, params=params, headers=headers, timeout=config.TIMEOUT)
+        except requests.exceptions.ConnectionError as e:
+            try:
+                if not isinstance(e.args[0].args[1], BadStatusLine):
+                    raise
+                # will return a package with status '0 -'
+                # and value like:
+                # 6f:00:8a:9c:09:74:e4:d8:e0:14:bf:96:3a:56:a0:64:1b:a4:25:5d:12:f4:31:a5:30:f1:c6:48:5f:c3:75:6a:99:93
+                # seems like status of typing, but before I make further achievement code will remain like this
+                return '2'
+            except:
+                raise
+        r.raise_for_status()
+        regx = r'window.synccheck={retcode:"(\d+)",selector:"(\d+)"}'
+        pm = re.search(regx, r.text)
+        if pm is None or pm.group(1) != '0':
+            logger.debug('Unexpected sync check result: %s' % r.text)
+            return None
+        return pm.group(2)
 
     def get_msg(self, loginId):
         loginInfo = self.db.get_login_info_by_uuid(loginId)
