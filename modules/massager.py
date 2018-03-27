@@ -108,8 +108,8 @@ class Massager():
                 if msgType == 10000:
                     pprint.pprint(msg)
                     sent = itchats.add_friend(receiver, status=2, verifyContent='', loginInfo=loginInfo)
-                    pprint.pprint(nickName)
-                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
+                    # reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
+                    reply_msg = '\u4f60\u597d'
                     print reply_msg
                     autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
                     print 'Successfully replied to new friend %s' % receiver
