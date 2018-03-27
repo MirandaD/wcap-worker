@@ -61,7 +61,7 @@ class Massager():
             default_reply = pydash.find(predefined_msg_array, {'key': unicode('default')})
             reply_msg = default_reply['value']
             if msg_content=='new_friend':
-                default_reply = pydash.find(predefined_msg_array, {'key': unicode('new_friend')})
+                default_reply = pydash.find(predefined_msg_array, {'key': unicode('newfriend')})
                 reply_msg = default_reply['value']
             if not isKeyWordReplyActive:
                 return reply_msg
@@ -100,16 +100,16 @@ class Massager():
                     newFriendUserName = msg['RecommendInfo']['UserName']
                     sent = itchats.add_friend(newFriendUserName, status=3, verifyContent=msg['Ticket'], loginInfo=loginInfo)
                     print 'Successfully added a new friend'
-                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'new_friend', isKeyWordReplyActive=True)
+                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
                     print reply_msg
                     autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
                     print 'Successfully replied to new friend %s' % newFriendUserName
                     return autoReply
                 if msgType == 10000:
                     pprint.pprint(msg)
-                    sent = itchats.add_friend(receiver, status=2, verifyContent=msg['Ticket'], loginInfo=loginInfo)
+                    sent = itchats.add_friend(receiver, status=2, verifyContent='', loginInfo=loginInfo)
                     pprint.pprint(nickName)
-                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'new_friend', isKeyWordReplyActive=True)
+                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
                     print reply_msg
                     autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
                     print 'Successfully replied to new friend %s' % receiver
