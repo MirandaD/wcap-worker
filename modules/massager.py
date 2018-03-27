@@ -5,6 +5,7 @@ import time
 import config
 import itchats
 import pydash
+import pprint
 
 class Massager():
     def __init__(self, requests, db):
@@ -102,6 +103,15 @@ class Massager():
                     autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
                     print 'Successfully replied to new friend %s' % newFriendUserName
                     return autoReply
+                if msgType == 10000:
+                    pprint.pprint msg
+                    newFriendUserName = msg['RecommendInfo']['UserName']
+                    sent = itchats.add_friend(newFriendUserName, status=3, verifyContent=msg['Ticket'], loginInfo=loginInfo)
+                    print 'Successfully added a new friend'
+                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'new_friend', isKeyWordReplyActive=True)
+                    print reply_msg
+                    autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
+                    print 'Successfully replied to new friend %s' % newFriendUserName
             except ConnectionError as connectionError:
                 print 'connection error when replying', connectionError
                 time.sleep(3)
