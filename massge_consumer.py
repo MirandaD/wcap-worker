@@ -43,10 +43,11 @@ class MassageConsumer():
                             wechatCommunicateRet = pydash.get(processRes, 'BaseResponse.Ret', default=-1)
                             print pydash.get(processRes, 'BaseResponse')
                             if(wechatCommunicateRet != 0):
+                                print wechatCommunicateRet
                                 print 'Disconnected with wechat account', wechatCommunicateRet
                 time.sleep(3)
-                
+
 
 if __name__ == '__main__':
-    mc = MassageConsumer() 
+    mc = MassageConsumer()
     h = mc.test_consume_msg()

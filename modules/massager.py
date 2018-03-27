@@ -60,7 +60,7 @@ class Massager():
             print predefined_msg_array
             default_reply = pydash.find(predefined_msg_array, {'key': unicode('default')})
             reply_msg = default_reply['value']
-            if msg_content=='new_friend':
+            if msg_content=='newfriend':
                 default_reply = pydash.find(predefined_msg_array, {'key': unicode('newfriend')})
                 reply_msg = default_reply['value']
             if not isKeyWordReplyActive:
