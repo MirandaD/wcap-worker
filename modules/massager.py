@@ -5,6 +5,7 @@ import time
 import config
 import itchats
 import pydash
+import pprint
 
 class Massager():
     def __init__(self, requests, db):
@@ -90,8 +91,8 @@ class Massager():
             print predefined_msg_array
             default_reply = pydash.find(predefined_msg_array, {'key': unicode('default')})
             reply_msg = default_reply['value']
-            if msg_content=='new_friend':
-                default_reply = pydash.find(predefined_msg_array, {'key': unicode('new_friend')})
+            if msg_content=='newfriend':
+                default_reply = pydash.find(predefined_msg_array, {'key': unicode('newfriend')})
                 reply_msg = default_reply['value']
             if not isKeyWordReplyActive:
                 return reply_msg
@@ -117,24 +118,35 @@ class Massager():
             return 'OK'
         if msgType:
             try:
+                print 'msgType'
+                print msgType
                 if msgType==1 and isActivateAutoReply: # plain text
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], msg['Content'], True)
-                    sent = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=receiver)
+                    sent = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1, content=reply_msg, toUserName=receiver)
+                    pprint.pprint(sent)
                     print 'Successfully reply to %s' % receiver
                     return sent
-                if msgType==37 and isAutoAddFriend: # friend request
+                if msgType == 37 and isAutoAddFriend: # friend request
+                    print 'new friend'
                     newFriendUserName = msg['RecommendInfo']['UserName']
                     sent = itchats.add_friend(newFriendUserName, status=3, verifyContent=msg['Ticket'], loginInfo=loginInfo)
                     print 'Successfully added a new friend'
-                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'new_friend', isKeyWordReplyActive=True)
+                    reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
                     print reply_msg
                     autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
                     print 'Successfully replied to new friend %s' % newFriendUserName
                     return autoReply
-            except ConnectionError as connectionError:
-                print 'connection error when replying', connectionError
-                time.sleep(3)
+                if msgType == 10000:
+                    pprint.pprint(msg)
+                    sent = itchats.add_friend(receiver, status=2, verifyContent='', loginInfo=loginInfo)
+                    # reply_msg = self.get_reply_msg(loginInfo['customReply'], 'newfriend', isKeyWordReplyActive=True)
+                    reply_msg = '\u4f60\u597d'
+                    print reply_msg
+                    autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1, content=reply_msg, toUserName=receiver)
+                    pprint.pprint(autoReply)
+                    print 'Successfully replied to new friend %s' % receiver
             except Exception as e:
-                print 'unexpected error happened', e.message, e.__doc__
+                print'unexpected error happened', e.message, e.__doc__
+                time.sleep(3)
 
         return 'No compatible msg type, continue'
