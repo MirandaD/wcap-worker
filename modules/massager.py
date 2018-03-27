@@ -104,7 +104,7 @@ class Massager():
                     print 'Successfully replied to new friend %s' % newFriendUserName
                     return autoReply
                 if msgType == 10000:
-                    pprint.pprint msg
+                    pprint.pprint(msg)
                     newFriendUserName = msg['RecommendInfo']['UserName']
                     sent = itchats.add_friend(newFriendUserName, status=3, verifyContent=msg['Ticket'], loginInfo=loginInfo)
                     print 'Successfully added a new friend'
