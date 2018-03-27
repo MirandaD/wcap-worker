@@ -105,17 +105,14 @@ class Massager():
                     return autoReply
                 if msgType == 10000:
                     pprint.pprint(msg)
-                    newFriendUserName = msg['RecommendInfo']['UserName']
-                    sent = itchats.add_friend(newFriendUserName, status=3, verifyContent=msg['Ticket'], loginInfo=loginInfo)
-                    print 'Successfully added a new friend'
+                    sent = itchats.add_friend(receiver, status=2, verifyContent=msg['Ticket'], loginInfo=loginInfo)
+                    pprint.pprint(sent)
                     reply_msg = self.get_reply_msg(loginInfo['customReply'], 'new_friend', isKeyWordReplyActive=True)
                     print reply_msg
                     autoReply = itchats.send_raw_msg(loginInfo=loginInfo, userName=userName, msgType=1,content=reply_msg,toUserName=newFriendUserName)
                     print 'Successfully replied to new friend %s' % newFriendUserName
-            except ConnectionError as connectionError:
-                print 'connection error when replying', connectionError
-                time.sleep(3)
             except Exception as e:
-                print 'unexpected error happened', e.message, e.__doc__
+                print'unexpected error happened', e.message, e.__doc__
+                time.sleep(3)
 
         return 'No compatible msg type, continue'
